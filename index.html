@@ -51,7 +51,6 @@ body{
     font-size:64px;
     line-height:1.3;
 }
-
 .gradient-text{
     background:linear-gradient(to bottom,#FFD700,#00C853);
     -webkit-background-clip:text;
@@ -60,7 +59,6 @@ body{
     color:transparent;
     font-size:52px;
 }
-
 /* 会社名画面 */
 #company-screen{
     position:fixed;
@@ -68,44 +66,34 @@ body{
     left:0;
     width:100%;
     height:100vh;
-
     display:flex;
     justify-content:center;
     align-items:center;
     text-align:center;
-
     background:#000;
-
     font-family:"Yomogi", cursive;
-
     opacity:0;
     transition:opacity .8s ease;
 }
-
 #company-screen.show{
     opacity:1;
 }
-
 #company-screen.hide{
     opacity:0;
 }
-
 .company{
     color:#fff;
     font-size:56px;
     margin-bottom:50px;
 }
-
 .member-grid{
     display:grid;
     grid-template-columns:auto auto;
     gap:20px 120px;
     justify-content:center;
 }
-
 .member{
     font-size:40px;
-
     background:linear-gradient(to bottom,#ffffff,#66ccff);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
@@ -115,7 +103,6 @@ body{
 </style>
 </head>
 <body>
-
 <!-- タイトル -->
 <div id="title-screen">
     <h1>
@@ -123,7 +110,6 @@ body{
         <span class="gradient-text">spin-off スピンオフ</span>
     </h1>
 </div>
-
 <!-- 会社名 -->
 <div id="company-screen">
     <div>
@@ -133,41 +119,42 @@ body{
             <div class="member">©月満社</div>
             <div class="member"> Sさん</div>
 
-            <div class="member">©The Originar 0</div>
-            <div class="member"> Yさん</div>
+            <div class="member">©The Original 0</div>
+            <div class="member"> Goriraさん</div>
 
             <div class="member">©The Originar 0</div>
             <div class="member"> Dさん</div>
         </div>
     </div>
 </div>
-
 <script>
 const title = document.getElementById("title-screen");
 const company = document.getElementById("company-screen");
-
 // 0.3秒後にタイトル表示
 setTimeout(() => {
     title.classList.add("show");
 }, 300);
-
 // 2秒後にタイトルを消す
 setTimeout(() => {
     title.classList.remove("show");
     title.classList.add("hide");
 }, 2000);
-
 // タイトルが消えたら会社名表示
 setTimeout(() => {
     company.classList.add("show");
 }, 2800);
-
 // 約2秒後に会社名を消す
 setTimeout(() => {
     company.classList.remove("show");
     company.classList.add("hide");
+    bgm.pause();
+    bgm.currentTime=0;
 }, 4800);
+// 自動再生に失敗したら、最初のクリックで再生
+bgm.play().catch(() => {
+    document.addEventListener("click", () => {
+    }, { once: true });
+});
 </script>
-
 </body>
 </html>
