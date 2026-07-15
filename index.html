@@ -1,96 +1,173 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>spin-off（スピンオフ）漢字 Typing</title>
 
-    <title>spin-off（スピンオフ）漢字 Typing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Hachi+Maru+Pop&family=Reggae+One&family=Shippori+Mincho&family=Yomogi&family=Yuji+Syuku&display=swap" rel="stylesheet">
+<style>
+body{
+    margin:0;
+    background:#000;
+    overflow:hidden;
+}
 
-    <style>
-        body{
-            margin:0;
-            background:#000;
-            overflow:hidden;
-        }
+/* タイトル画面 */
+#title-screen{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100vh;
 
-        /* タイトル画面 */
-        #title-screen{
-            width:100%;
-            height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            background:#000;
-            color:#fff;
-            text-align:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
 
-            font-family:"Yomogi", cursive;
-            font-weight:400;
-            font-style:normal;
-        }
+    background:#000;
+    color:#fff;
 
-        #title-screen h1{
-            font-size:64px;
-            margin:0;
-            line-height:1.3;
-        }
+    font-family:"Yomogi", cursive;
 
-        /* spin-offだけグラデーションにしましょう */
-        .gradient-text{
-            background:linear-gradient(to bottom, #CC5e58, #228b22);
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
-            background-clip:text;
-            color:transparent;
-            font-size:52px;
-        }
+    opacity:0;
+    transition:opacity 0.8s ease;
+}
 
-        /* 起動画面 */
-        #boot-screen{
-            position:fixed;
-            top:0;
-            left:0;
-            width:100%;
-            height:100vh;
-            background:#000;
-            z-index:9999;
+#title-screen.show{
+    opacity:1;
+}
 
-            opacity:1;
-            transition:opacity 0.6s ease;
-        }
+#title-screen.hide{
+    opacity:0;
+}
 
-        /* フェードアウト */
-        #boot-screen.fade-out{
-            opacity:0;
-            pointer-events:none;
-        }
-    </style>
+#title-screen h1{
+    margin:0;
+    font-size:64px;
+    line-height:1.3;
+}
+
+.gradient-text{
+    background:linear-gradient(to bottom,#FFD700,#00C853);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    color:transparent;
+    font-size:52px;
+}
+
+/* 会社名画面 */
+#company-screen{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+
+    background:#000;
+
+    font-family:"Yomogi", cursive;
+
+    opacity:0;
+    transition:opacity .8s ease;
+}
+
+#company-screen.show{
+    opacity:1;
+}
+
+#company-screen.hide{
+    opacity:0;
+}
+
+.company{
+    color:#fff;
+    font-size:56px;
+    margin-bottom:50px;
+}
+
+.member-grid{
+    display:grid;
+    grid-template-columns:auto auto;
+    gap:20px 120px;
+    justify-content:center;
+}
+
+.member{
+    font-size:40px;
+
+    background:linear-gradient(to bottom,#ffffff,#66ccff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    color:transparent;
+}
+</style>
 </head>
 <body>
 
-    <!-- タイトル画面 -->
-    <div id="title-screen">
-        <h1>
-            漢字 Typing<br>
-            <span class="gradient-text">spin-off スピンオフ</span>
-        </h1>
+<!-- タイトル -->
+<div id="title-screen">
+    <h1>
+        漢字 Typing<br>
+        <span class="gradient-text">spin-off スピンオフ</span>
+    </h1>
+</div>
+
+<!-- 会社名 -->
+<div id="company-screen">
+    <div>
+        <div class="company">会社:(秘密厳守のため、名前は出しません)</div>
+
+        <div class="member-grid">
+            <div class="member">©月満社</div>
+            <div class="member"> Sさん</div>
+
+            <div class="member">©The Originar 0</div>
+            <div class="member"> Yさん</div>
+
+            <div class="member">©The Originar 0</div>
+            <div class="member"> Dさん</div>
+        </div>
     </div>
+</div>
 
-    <!-- 黒画面 -->
-    <div id="boot-screen"></div>
+<script>
+const title = document.getElementById("title-screen");
+const company = document.getElementById("company-screen");
 
-    <script>
-        window.addEventListener("load", () => {
-            setTimeout(() => {
-                document.getElementById("boot-screen").classList.add("fade-out");
-            }, 2000);
-        });
-    </script>
+// 0.3秒後にタイトル表示
+setTimeout(() => {
+    title.classList.add("show");
+}, 300);
+
+// 2秒後にタイトルを消す
+setTimeout(() => {
+    title.classList.remove("show");
+    title.classList.add("hide");
+}, 2000);
+
+// タイトルが消えたら会社名表示
+setTimeout(() => {
+    company.classList.add("show");
+}, 2800);
+
+// 約2秒後に会社名を消す
+setTimeout(() => {
+    company.classList.remove("show");
+    company.classList.add("hide");
+}, 4800);
+</script>
 
 </body>
 </html>
