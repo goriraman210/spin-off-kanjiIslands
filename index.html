@@ -2,20 +2,20 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>spin-off（スピンオフ）漢字 Typing</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>spin-off（スピンオフ）漢字 Typing</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
 <style>
-
-body{
+    body{
     margin:0;
     background:#000;
     overflow:hidden;
+
+    font-family:"Yomogi", cursive;
 }
 
 
@@ -266,144 +266,284 @@ body{
     transform:scale(1.05);
 
 }
+/* 名前入力画面 */
+#name-panel{
 
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0,0,0,.6);
+
+}
+
+#name-panel.show{
+
+    display: flex;
+
+}
+
+#name-panel .panel{
+
+    width: 500px;
+    padding: 35px;
+
+    background: #6f6f6f;
+
+    border-radius: 25px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 25px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,.5);
+
+}
+/* タイトル */
+#name-panel h2{
+    margin: 0;
+    color: white;
+    font-size: 38px;
+    font-weight: bold;
+}
+
+/* 入力欄 */
+#player-name{
+    width: 90%;
+    height: 65px;
+    border: none;
+    border-radius: 15px;
+    background: white;
+    font-size: 28px;
+    text-align: center;
+    outline: none;
+
+    font-family: "Yomogi", cursive;
+}
+
+/* 決定ボタン */
+#name-ok-btn{
+    width: 90%;
+    height: 70px;
+    border: none;
+    border-radius: 15px;
+    background: #59d8ff;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+
+    font-family: "Yomogi", cursive;
+}
+
+#name-ok-btn:hover{
+    background: #38cbff;
+    transform: scale(1.03);
+}
+
+#name-ok-btn:active{
+    transform: scale(0.98);
+}
 </style>
-
 </head>
 
 
 <body>
+    
+
+    <!-- タイトル画面 -->
+    <div id="title-screen">
+
+        <h1>
+            漢字 Typing<br>
+
+            <span class="gradient-text">
+                spin-off スピンオフ
+            </span>
+
+        </h1>
+
+    </div>
 
 
-<!-- タイトル -->
 
-<div id="title-screen">
+    <!-- 会社名画面 -->
+    <div id="company-screen">
 
-    <h1>
-        漢字 Typing<br>
-        <span class="gradient-text">
-            spin-off スピンオフ
-        </span>
-    </h1>
+        <div>
 
-</div>
+            <div class="company">
+                会社:(秘密厳守のため名前は出しません)
+            </div>
 
+            <div class="member-grid">
 
+                <div class="member">©月満社</div>
+                <div class="member">Sさん</div>
 
-<!-- 会社名 -->
+                <div class="member">©The Original 0</div>
+                <div class="member">Goriraさん</div>
 
-<div id="company-screen">
+                <div class="member">©The Original 0</div>
+                <div class="member">Dさん</div>
 
-    <div>
-
-        <div class="company">
-            会社:(秘密厳守のため名前は出しません)
-        </div>
-
-
-        <div class="member-grid">
-
-            <div class="member">©月満社</div>
-            <div class="member">Sさん</div>
-
-
-            <div class="member">©The Original 0</div>
-            <div class="member">Goriraさん</div>
-
-
-            <div class="member">©The Originar 0</div>
-            <div class="member">Dさん</div>
-
+            </div>
 
         </div>
 
+    </div>
+
+
+
+    <!-- OP省略 -->
+    <div id="skip-screen">
+
+        <h1>OPムービー省略</h1>
+
+    </div>
+
+
+
+    <!-- スタート画面 -->
+    <div id="start-screen">
+
+        <button id="start-btn">
+            START
+        </button>
+
+    </div>
+
+
+
+    <!-- 名前入力画面 -->
+<div id="name-panel">
+
+    <div class="panel">
+
+        <h2>名前を入力してくれ！</h2>
+
+        <input
+            type="text"
+            id="player-name"
+            placeholder="ここに名前を入力"
+            maxlength="12"
+        >
+
+        <button id="name-ok-btn">
+            決定
+        </button>
 
     </div>
 
 </div>
-<!-- 一旦OP省略 -->
- <div id="skip-screen">
-    <h1>OPムービー省略</h1>
- </div>
 
- <!-- スタート画面 -->
-<div id="start-screen">
-    <button id="start-btn">スタート(START)</button>
-</div>
 
-<script>
 
-const title = document.getElementById("title-screen");
+    <script>
+        const title = document.getElementById("title-screen");
 const company = document.getElementById("company-screen");
 const skip = document.getElementById("skip-screen");
+
 const startScreen = document.getElementById("start-screen");
+const startBtn = document.getElementById("start-btn");
 
-// 0.3秒後 ロゴ表示
+const nameScreen = document.getElementById("name-panel");
+const nameOk = document.getElementById("name-ok-btn");
 
-setTimeout(()=>{
+// =========================
+// タイトル画面
+// =========================
+
+// 0.3秒後 タイトル表示
+setTimeout(() => {
 
     title.classList.add("show");
 
-},300);
+}, 300);
 
-
-
-// 2秒後 ロゴ消える
-
-setTimeout(()=>{
+// 2秒後 タイトルを消す
+setTimeout(() => {
 
     title.classList.remove("show");
-
     title.classList.add("hide");
 
-},2000);
+}, 2000);
 
-
+// =========================
+// 会社名画面
+// =========================
 
 // 2.8秒後 会社名表示
-
-setTimeout(()=>{
+setTimeout(() => {
 
     company.classList.add("show");
 
-},2800);
+}, 2800);
 
-
-
-// 4.8秒後 会社名消える
-
-setTimeout(()=>{
+// 4.8秒後 会社名を消す
+setTimeout(() => {
 
     company.classList.remove("show");
-
     company.classList.add("hide");
 
-},4800);
+}, 4800);
+
+// =========================
+// OP省略
+// =========================
 
 // 5.6秒後 OP省略表示
-setTimeout(()=>{
+setTimeout(() => {
 
     skip.classList.add("show");
 
-},5600);
-
+}, 5600);
 
 // 7.0秒後 OP省略を消す
-setTimeout(()=>{
+setTimeout(() => {
 
     skip.classList.remove("show");
     skip.classList.add("hide");
 
-},7000);
-// 7.8秒後　スタート画面表示
-setTimeout(()=>{
+}, 7000);
+
+// =========================
+// START画面
+// =========================
+
+// 7.8秒後 START表示
+setTimeout(() => {
 
     startScreen.classList.add("show");
 
-},7800);
+}, 7800);
 
-</script>
+// STARTボタン
+startBtn.addEventListener("click", () => {
 
+    startScreen.style.display = "none";
+
+    nameScreen.classList.add("show");
+
+});
+
+// =========================
+// 名前決定
+// =========================
+
+
+    </script>
 
 </body>
 </html>
