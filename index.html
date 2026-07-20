@@ -355,6 +355,156 @@
 #name-ok-btn:active{
     transform: scale(0.98);
 }
+/* 性別パネル */
+
+#gender-panel{
+
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100vh;
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0,0,0,.6);
+
+    font-family:"Yomogi", cursive;
+
+}
+
+#gender-panel.show{
+
+    display:flex;
+
+}
+
+#gender-panel .panel{
+
+    width:500px;
+
+    padding:35px;
+
+    background:#6f6f6f;
+
+    border-radius:25px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:30px;
+
+}
+
+#gender-panel h2{
+
+    margin:0;
+
+    color:white;
+
+    font-size:40px;
+
+}
+
+.gender-area{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:space-around;
+
+}
+
+.gender-box{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    cursor:pointer;
+
+}
+
+.gender-icon{
+
+    width:90px;
+    height:90px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:48px;
+
+    color:white;
+
+}
+
+#male-box .gender-icon{
+
+    background:#4fc3ff;
+
+}
+
+#female-box .gender-icon{
+
+    background:#ff6bb5;
+
+}
+
+.gender-arrow{
+
+    margin-top:15px;
+
+    font-size:42px;
+
+    color:white;
+
+    height:42px;
+
+}
+
+.gender-arrow.show{
+
+    visibility:visible;
+
+}
+
+#gender-ok-btn{
+
+    width:90%;
+    height:70px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:#59d8ff;
+
+    color:white;
+
+    font-size:30px;
+
+    font-family:"Yomogi", cursive;
+
+    cursor:pointer;
+
+}
+
 </style>
 </head>
 
@@ -447,6 +597,44 @@
     </div>
 
 </div>
+<!-- 性別選択画面 -->
+<div id="gender-panel">
+
+    <div class="panel">
+
+        <h2>男 or 女？</h2>
+
+        <div class="gender-area">
+
+<div class="gender-box" id="male-box">
+
+    <div class="gender-icon">
+        <img src="otoko.png" alt="" style="width: 76px; height: 76px;">
+    </div>
+
+    <div class="gender-arrow" id="male-arrow"></div>
+
+</div>
+
+            <div class="gender-box" id="female-box">
+
+    <div class="gender-icon">
+        <img src="onnna.png" alt="" style="width: 76px; height: 76px;">
+    </div>
+
+    <div class="gender-arrow" id="female-arrow"></div>
+
+</div>
+
+        </div>
+
+        <button id="gender-ok-btn">
+            決定
+        </button>
+
+    </div>
+
+</div>
 
 
 
@@ -460,6 +648,16 @@ const startBtn = document.getElementById("start-btn");
 
 const nameScreen = document.getElementById("name-panel");
 const nameOk = document.getElementById("name-ok-btn");
+const playerName = document.getElementById("player-name");
+const maleBox = document.getElementById("male-box");
+const femaleBox = document.getElementById("female-box");
+
+const maleArrow = document.getElementById("male-arrow");
+const femaleArrow = document.getElementById("female-arrow");
+
+const genderOkBtn = document.getElementById("gender-ok-btn");
+
+let selectedGender = "";
 
 // =========================
 // タイトル画面
@@ -542,8 +740,71 @@ startBtn.addEventListener("click", () => {
 // 名前決定
 // =========================
 
+nameOk.addEventListener("click", () => {
 
-    </script>
+    const name = playerName.value.trim();
+
+    if(name === ""){
+        alert("君の名前がわからないぞ！");
+        return;
+    }
+
+// 名前を保存
+localStorage.setItem("playerName", name);
+
+alert("名前を保存したぞ！");
+
+// 名前パネルを閉じる
+nameScreen.classList.remove("show");
+
+// 性別パネルを開く
+document.getElementById("gender-panel").classList.add("show");
+
+});
+
+const savedName = localStorage.getItem("playerName");
+
+if(savedName){
+    playerName.value = savedName;
+}
+// =========================
+// 性別選択
+// =========================
+
+maleBox.addEventListener("click", () => {
+
+    selectedGender = "男";
+
+    maleArrow.textContent = "↑";
+    femaleArrow.textContent = "";
+
+});
+
+femaleBox.addEventListener("click", () => {
+
+    selectedGender = "女";
+
+    femaleArrow.textContent = "↑";
+    maleArrow.textContent = "";
+
+});
+
+genderOkBtn.addEventListener("click", () => {
+
+    if(selectedGender === ""){
+
+        alert("性別を選んでくれ！");
+        return;
+
+    }
+
+    localStorage.setItem("gender", selectedGender);
+
+    alert("性別を保存したぞ！");
+
+});
+
+</script>
 
 </body>
 </html>
