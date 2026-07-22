@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon (7).ico" sizes="any">
+    <link rel="icon" href="favicon (8).ico" sizes="any">
 <style>
     body{
     margin:0;
@@ -505,7 +505,70 @@
     cursor:pointer;
 
 }
+/* プレイヤー生成画面 */
 
+#create-screen{
+
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100vh;
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    flex-direction:column;
+
+    background:#000;
+
+}
+
+#create-screen.show{
+
+    display:flex;
+
+}
+
+#gear{
+
+    font-size:80px;
+
+    margin-bottom:180px;
+
+}
+
+#player-ball{
+
+    width:80px;
+    height:80px;
+
+    border-radius:50%;
+
+    margin-top:-30px;
+
+    background:#4fc3ff;
+
+}
+
+@keyframes spin{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
 </style>
 </head>
 
@@ -636,6 +699,14 @@
     </div>
 
 </div>
+<!-- プレイヤー生成画面 -->
+<div id="create-screen">
+
+    <div id="gear">⚙️</div>
+
+    <div id="player-ball"></div>
+
+</div>
 
 
 
@@ -753,8 +824,6 @@ nameOk.addEventListener("click", () => {
 // 名前を保存
 localStorage.setItem("playerName", name);
 
-alert("名前を保存したぞ！");
-
 // 名前パネルを閉じる
 nameScreen.classList.remove("show");
 
@@ -801,7 +870,25 @@ genderOkBtn.addEventListener("click", () => {
 
     localStorage.setItem("gender", selectedGender);
 
-    alert("性別を保存したぞ！");
+    // 性別パネルを閉じる
+    document.getElementById("gender-panel").classList.remove("show");
+
+    // プレイヤー生成画面を表示
+    document.getElementById("create-screen").classList.add("show");
+
+    // 男なら水色
+    if(selectedGender === "男"){
+
+        document.getElementById("player-ball").style.background = "#4fc3ff";
+
+    }
+
+    // 女ならピンク
+    if(selectedGender === "女"){
+
+        document.getElementById("player-ball").style.background = "#ff6bb5";
+
+    }
 
 });
 
