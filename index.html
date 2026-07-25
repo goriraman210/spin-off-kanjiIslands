@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -918,36 +919,40 @@ genderOkBtn.addEventListener("click", () => {
 document.addEventListener("keydown", (e) => {
 
     if (e.key.toLowerCase() !== "z") return;
+    // 名前・性別が未設定ならスキップ禁止
+if (
+    !localStorage.getItem("playerName") ||
+    !localStorage.getItem("gender")
+) {
+    alert("先に名前と性別を決めてくれ！");
+    return;
+}
 
-    // すべてのタイマーを無視して最終状態へ
-    title.classList.remove("show");
-    title.classList.add("hide");
+    // 画面全体をふわっと消す
+    document.body.style.transition = "opacity .6s ease";
+    document.body.style.opacity = "0";
 
-    company.classList.remove("show");
-    company.classList.add("hide");
+    setTimeout(() => {
 
-    skip.classList.remove("show");
-    skip.classList.add("hide");
+        // 全画面を非表示
+        title.style.display = "none";
+        company.style.display = "none";
+        skip.style.display = "none";
+        startScreen.style.display = "none";
+        nameScreen.classList.remove("show");
+        document.getElementById("gender-panel").classList.remove("show");
+        document.getElementById("skip-text").style.display = "none";
 
-    startScreen.style.display = "none";
-    nameScreen.classList.remove("show");
-    document.getElementById("gender-panel").classList.remove("show");
+        // プレイヤー生成画面
+        document.getElementById("create-screen").classList.add("show");
 
-    document.getElementById("skip-text").style.display = "none";
+        // ふわっと戻す
+        document.body.style.opacity = "1";
 
-    // プレイヤー生成画面を表示
-    document.getElementById("create-screen").classList.add("show");
-
-    // 性別が保存されていれば色を復元
-    const gender = localStorage.getItem("gender");
-
-    if (gender === "男") {
-        document.getElementById("player-ball").style.background = "#4fc3ff";
-    } else if (gender === "女") {
-        document.getElementById("player-ball").style.background = "#ff6bb5";
-    }
+    }, 600);
 
 });
+
 
 </script>
 
