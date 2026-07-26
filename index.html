@@ -910,7 +910,7 @@ genderOkBtn.addEventListener("click", () => {
     // 性別パネルを閉じる
     document.getElementById("gender-panel").classList.remove("show");
 
-    // プレイヤー生成画面を表示
+    // プレイヤー生成画面
     document.getElementById("create-screen").classList.add("show");
 
     // 男なら水色
@@ -956,11 +956,10 @@ if (
         startScreen.style.display = "none";
         nameScreen.classList.remove("show");
         document.getElementById("gender-panel").classList.remove("show");
-        document.getElementById("skip-text").style.display = "none";
 
         // プレイヤー生成画面
         document.getElementById("create-screen").classList.add("show");
-
+        document.getElementById("skip-text").textContent = "↑ 上矢印キーを押すんだ!!";
         // ふわっと戻す
         document.body.style.opacity = "1";
 
