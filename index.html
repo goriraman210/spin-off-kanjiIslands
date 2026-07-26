@@ -536,11 +536,9 @@
 }
 
 #gear{
-
-    font-size:80px;
-
+    font-size:18px;
     margin-bottom:180px;
-
+    transition:font-size .05s linear;
 }
 
 #player-ball{
@@ -589,8 +587,23 @@
     opacity: 0.7;
 
     user-select: none;
-
 }
+#top-bar{
+    position:fixed;
+    top:-80px;
+    left:50%;
+    transform:translateX(-50%);
+    width:80%;
+    height:35px;
+    background:#808080;
+    border-radius:12px;
+    transition:top .6s ease;
+}
+
+#top-bar.show{
+    top:2cm;            /* 上から約2cm */
+}
+
 </style>
 </head>
 
@@ -725,11 +738,13 @@
 <div id="create-screen">
 
     <div id="gear">⚙️</div>
-
+    <div id="top-bar"></div>
     <div id="player-ball"></div>
 
 </div>
 <div id="skip-text">スキップ（Zキー）</div> 
+<!-- 上バー(約2cm) -->
+ <div id="top-bar"></div>
 
 
     <script>
@@ -952,8 +967,31 @@ if (
     }, 600);
 
 });
+const gear = document.getElementById("gear");
 
+let gearSize = 13;
+let barShown = false;
 
+document.addEventListener("keydown", (e) => {
+
+    if (
+        e.key !== "w" &&
+        e.key !== "W" &&
+        e.key !== "ArrowUp"
+    ) return;
+
+    // バーが出たら何もしない
+    if (barShown) return;
+
+    gearSize += 1;
+    gear.style.fontSize = gearSize + "px";
+
+    if (gearSize >= 39) {
+        document.getElementById("top-bar").classList.add("show");
+        barShown = true;
+    }
+
+});
 </script>
 
 </body>
