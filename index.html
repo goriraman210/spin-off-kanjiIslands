@@ -1,6 +1,4 @@
 
-
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -534,13 +532,45 @@
     display:flex;
 
 }
-
 #gear{
-    font-size:18px;
-    margin-bottom:180px;
-    transition:font-size .05s linear;
+    position:fixed;
+    left:50%;
+    top: 35%;
+    transform:translate(-50%,-50%);
+
+    transition:
+        left 1.2s ease,
+        top 1.2s ease;
+        z-index:1000;
+}
+#gear.move{
+    animation: gearMove 1.2s ease forwards;
 }
 
+@keyframes gearMove{
+
+    0%{
+        
+        transform:translate(-50%,-50%) rotate(0deg);
+        font-size:39px;
+    }
+
+    40%{
+        transform:translate(-50%,-50%) rotate(360deg);
+        font-size:58px;
+    }
+
+    75%{
+        transform:translate(-50%,-50%) rotate(630deg);
+        font-size:48px;
+    }
+
+    100%{
+        transform:translate(-50%,-50%) rotate(720deg);
+        font-size:27px;
+    }
+
+}
 #player-ball{
 
     width:80px;
@@ -743,10 +773,6 @@
 
 </div>
 <div id="skip-text">スキップ（Zキー）</div> 
-<!-- 上バー(約2cm) -->
- <div id="top-bar"></div>
-
-
     <script>
         const title = document.getElementById("title-screen");
 const company = document.getElementById("company-screen");
@@ -942,6 +968,10 @@ if (
     alert("先に名前と性別を決めてくれ！");
     return;
 }
+// プレイヤー生成画面ではスキップ禁止
+if (document.getElementById("create-screen").classList.contains("show")) {
+    return;
+}
 
     // 画面全体をふわっと消す
     document.body.style.transition = "opacity .6s ease";
@@ -959,7 +989,7 @@ if (
 
         // プレイヤー生成画面
         document.getElementById("create-screen").classList.add("show");
-        document.getElementById("skip-text").textContent = "↑ 上矢印キーを押すんだ!!";
+        document.getElementById("skip-text").textContent = "↑ 上矢印キー(Wキー)を押すんだ!!";
         // ふわっと戻す
         document.body.style.opacity = "1";
 
@@ -979,16 +1009,33 @@ document.addEventListener("keydown", (e) => {
         e.key !== "ArrowUp"
     ) return;
 
-    // バーが出たら何もしない
+    // バーが出たら、歯車を動かなくする😊
     if (barShown) return;
 
     gearSize += 1;
     gear.style.fontSize = gearSize + "px";
 
-    if (gearSize >= 39) {
-        document.getElementById("top-bar").classList.add("show");
-        barShown = true;
-    }
+if (gearSize >= 39) {
+
+    const bar = document.getElementById("top-bar");
+
+    bar.classList.add("show");
+
+    // バーが降りてきてから位置を取得
+    setTimeout(() => {
+
+        const rect = bar.getBoundingClientRect();
+
+        gear.style.left = (rect.left + 18) + "px";
+        gear.style.top = (rect.top + rect.height / 2) + "px";
+
+        gear.classList.add("move");
+
+    }, 600); // バーの transition: top .6s と同じ時間
+
+    barShown = true;
+}
+    
 
 });
 </script>
