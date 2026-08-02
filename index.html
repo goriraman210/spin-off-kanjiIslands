@@ -1164,6 +1164,7 @@ document.addEventListener("keydown", (e)=>{
         e.key !== "D" &&
         e.key !== "ArrowRight"
     ) return;
+    if (!barShown) return;
 
     const savedGender = localStorage.getItem("gender");
 
