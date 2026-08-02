@@ -1,4 +1,7 @@
 
+
+
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -633,7 +636,85 @@
 #top-bar.show{
     top:2cm;            /* 上から約2cm */
 }
+#scroll-icon{
 
+    position:fixed;
+
+    top:50%;
+transform:translate(50px,-50%);
+
+    right:10%;
+
+    width:80px;
+    height:80px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:60px;
+
+    opacity:0;
+
+    transform:translateX(50px);
+
+    transition:all .8s ease;
+
+}
+
+
+#scroll-icon.show{
+
+    opacity:1;
+
+    transform:translate(0,-50%);
+
+}
+#player-ball{
+    width:80px;
+    height:80px;
+    object-fit:contain;
+}
+#op-video{
+
+    width:80%;
+    height:auto;
+
+}
+
+
+#op-start-btn{
+
+    display:none;
+
+    position:absolute;
+
+    bottom:100px;
+
+    width:320px;
+    height:90px;
+
+    border:none;
+    border-radius:18px;
+
+    background:#666;
+
+    color:white;
+
+    font-size:40px;
+
+    font-family:"Yomogi", cursive;
+
+    cursor:pointer;
+
+}
+
+
+#op-start-btn:hover{
+
+    background:#888;
+
+}
 </style>
 </head>
 
@@ -685,12 +766,16 @@
 
 
 
-    <!-- OP省略 -->
-    <div id="skip-screen">
+<!-- OP動画 -->
+<div id="skip-screen">
 
-        <h1>OPムービー省略</h1>
+    <video id="op-video" src="op.mp4" autoplay></video>
 
-    </div>
+    <button id="op-start-btn">
+        START
+    </button>
+
+</div>
 
 
 
@@ -769,11 +854,15 @@
 
     <div id="gear">⚙️</div>
     <div id="top-bar"></div>
-    <div id="player-ball"></div>
-
+    <img id="player-ball" src="">
+    <dov id="scroll-icon">📜</dov>
 </div>
 <div id="skip-text">スキップ（Zキー）</div> 
     <script>
+        function showWMessage(){
+    document.getElementById("skip-text").textContent =
+    "↑ 上矢印キー(Wキー)を押すんだ!!";
+}
         const title = document.getElementById("title-screen");
 const company = document.getElementById("company-screen");
 const skip = document.getElementById("skip-screen");
@@ -906,6 +995,8 @@ if(savedName){
 
 maleBox.addEventListener("click", () => {
 
+    console.log("男が押された");
+
     selectedGender = "男";
 
     maleArrow.textContent = "↑";
@@ -915,6 +1006,8 @@ maleBox.addEventListener("click", () => {
 
 femaleBox.addEventListener("click", () => {
 
+    console.log("女が押された");
+
     selectedGender = "女";
 
     femaleArrow.textContent = "↑";
@@ -923,6 +1016,7 @@ femaleBox.addEventListener("click", () => {
 });
 
 genderOkBtn.addEventListener("click", () => {
+console.log("selectedGender =", selectedGender);
 
     if(selectedGender === ""){
 
@@ -938,6 +1032,17 @@ genderOkBtn.addEventListener("click", () => {
 
     // プレイヤー生成画面
     document.getElementById("create-screen").classList.add("show");
+    showWMessage();
+    const savedGender = localStorage.getItem("gender");
+const player = document.getElementById("player-ball");
+
+if(savedGender === "男"){
+    player.style.background = "#4fc3ff";
+}
+
+if(savedGender === "女"){
+    player.style.background = "#ff6bb5";
+}
 
     // 男なら水色
     if(selectedGender === "男"){
@@ -954,6 +1059,7 @@ genderOkBtn.addEventListener("click", () => {
     }
 
 });
+
 // =========================
 // Zキーで全部スキップ
 // =========================
@@ -989,7 +1095,7 @@ if (document.getElementById("create-screen").classList.contains("show")) {
 
         // プレイヤー生成画面
         document.getElementById("create-screen").classList.add("show");
-        document.getElementById("skip-text").textContent = "↑ 上矢印キー(Wキー)を押すんだ!!";
+        showWMessage
         // ふわっと戻す
         document.body.style.opacity = "1";
 
@@ -1016,6 +1122,8 @@ document.addEventListener("keydown", (e) => {
     gear.style.fontSize = gearSize + "px";
 
 if (gearSize >= 39) {
+    document.getElementById("skip-text").textContent =
+    "→ 右矢印キー(Dキー)を押すんだ!!";
 
     const bar = document.getElementById("top-bar");
 
@@ -1032,10 +1140,71 @@ if (gearSize >= 39) {
         gear.classList.add("move");
 
     }, 600); // バーの transition: top .6s と同じ時間
+    setTimeout(() => {
 
+    document.getElementById("scroll-icon").classList.add("show");
+
+}, 1800);
+    gearSound.currentTime = 0;
+    gearSound.play();
     barShown = true;
 }
     
+
+});
+const gearSound = new Audio("gear.mp3");
+gearSound.volume = 0.6;
+const player = document.getElementById("player-ball");
+const savedGender = localStorage.getItem("gender");
+console.log();
+document.addEventListener("keydown", (e)=>{
+
+    if(
+        e.key !== "d" &&
+        e.key !== "D" &&
+        e.key !== "ArrowRight"
+    ) return;
+
+    const savedGender = localStorage.getItem("gender");
+
+    if(savedGender === "男"){
+
+        player.src = "otoko2.png";
+        player.style.background = "transparent";
+
+    }
+
+    if(savedGender === "女"){
+
+        player.src = "onnna2.png";
+        player.style.background = "transparent";
+
+    }
+
+});
+const opVideo = document.getElementById("op-video");
+const opStartBtn = document.getElementById("op-start-btn");
+
+
+// 動画終了したらSTART表示
+opVideo.addEventListener("ended", ()=>{
+
+    opStartBtn.style.display = "block";
+
+});
+
+
+// START押したらゲーム開始
+opStartBtn.addEventListener("click", ()=>{
+
+    skip.classList.remove("show");
+    skip.classList.add("hide");
+
+    setTimeout(()=>{
+
+        startScreen.classList.add("show");
+
+    },800);
 
 });
 </script>
