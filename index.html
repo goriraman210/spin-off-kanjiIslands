@@ -2,6 +2,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -671,9 +673,20 @@ transform:translate(50px,-50%);
 
 }
 #player-ball{
+
+    position:fixed;
+
+    left:50%;
+
     width:80px;
     height:80px;
+
     object-fit:contain;
+
+    transform:translateX(-50%);
+
+    transition:left 0.8s ease;
+
 }
 #op-video{
 
@@ -769,7 +782,13 @@ transform:translate(50px,-50%);
 <!-- OP動画 -->
 <div id="skip-screen">
 
-    <video id="op-video" src="op.mp4" autoplay></video>
+    <video
+    id="op-video"
+    src="op.mp4"
+    autoplay
+    muted
+    playsinline>
+</video>
 
     <button id="op-start-btn">
         START
@@ -1035,7 +1054,6 @@ console.log("selectedGender =", selectedGender);
     showWMessage();
     const savedGender = localStorage.getItem("gender");
 const player = document.getElementById("player-ball");
-
 if(savedGender === "男"){
     player.style.background = "#4fc3ff";
 }
@@ -1095,7 +1113,7 @@ if (document.getElementById("create-screen").classList.contains("show")) {
 
         // プレイヤー生成画面
         document.getElementById("create-screen").classList.add("show");
-        showWMessage
+        showWMessage();
         // ふわっと戻す
         document.body.style.opacity = "1";
 
@@ -1156,6 +1174,10 @@ const gearSound = new Audio("gear.mp3");
 gearSound.volume = 0.6;
 const player = document.getElementById("player-ball");
 const savedGender = localStorage.getItem("gender");
+const scrollIcon = document.getElementById("scroll-icon");
+
+let scrollRight = 10;
+let scrollMoved = false;
 console.log();
 document.addEventListener("keydown", (e)=>{
 
@@ -1165,6 +1187,31 @@ document.addEventListener("keydown", (e)=>{
         e.key !== "ArrowRight"
     ) return;
     if (!barShown) return;
+if (!scrollMoved) {
+
+    scrollRight -= 0.5;
+
+    if (scrollRight < 3) {
+
+        scrollRight = 3;
+
+        // バーの位置取得
+        const rect = document.getElementById("top-bar").getBoundingClientRect();
+
+        // スクロールをバー左へ移動
+        scrollIcon.style.transition = "all 1.2s ease";
+        scrollIcon.style.right = "";
+        scrollIcon.style.left = (rect.left + 70) + "px";
+        scrollIcon.style.top = (rect.top + rect.height / 2) + "px";
+        scrollIcon.style.transform = "translateY(-50%)";
+
+        scrollMoved = true;
+    }
+
+    if (!scrollMoved) {
+        scrollIcon.style.right = scrollRight + "%";
+    }
+}
 
     const savedGender = localStorage.getItem("gender");
 
@@ -1181,6 +1228,32 @@ document.addEventListener("keydown", (e)=>{
         player.style.background = "transparent";
 
     }
+
+});
+// 主人公移動
+
+const playerMove = document.getElementById("player-ball");
+
+let playerX = 50;
+
+document.addEventListener("keydown",(e)=>{
+
+    if(
+        e.key !== "d" &&
+        e.key !== "D" &&
+        e.key !== "ArrowRight"
+    ) return;
+
+
+    playerX += 2;
+
+
+    if(playerX > 90){
+        playerX = 90;
+    }
+
+
+    playerMove.style.left = playerX + "%";
 
 });
 const opVideo = document.getElementById("op-video");
