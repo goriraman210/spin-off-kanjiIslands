@@ -1,9 +1,4 @@
 
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1122,8 +1117,10 @@ if (document.getElementById("create-screen").classList.contains("show")) {
 });
 const gear = document.getElementById("gear");
 
+let playerCanMove = false;
 let gearSize = 13;
 let barShown = false;
+let scrollShown = false;
 
 document.addEventListener("keydown", (e) => {
 
@@ -1160,12 +1157,15 @@ if (gearSize >= 39) {
     }, 600); // バーの transition: top .6s と同じ時間
     setTimeout(() => {
 
-    document.getElementById("scroll-icon").classList.add("show");
+    scrollIcon.classList.add("show");
 
 }, 1800);
+
     gearSound.currentTime = 0;
     gearSound.play();
     barShown = true;
+    playerCanMove = true;
+    canMoveRight = true;
 }
     
 
@@ -1186,48 +1186,26 @@ document.addEventListener("keydown", (e)=>{
         e.key !== "D" &&
         e.key !== "ArrowRight"
     ) return;
-    if (!barShown) return;
-if (!scrollMoved) {
 
-    scrollRight -= 0.5;
+ if (!playerCanMove) return;
+    if(!canMoveRight) return;
 
-    if (scrollRight < 3) {
-
-        scrollRight = 3;
-
-        // バーの位置取得
-        const rect = document.getElementById("top-bar").getBoundingClientRect();
-
-        // スクロールをバー左へ移動
-        scrollIcon.style.transition = "all 1.2s ease";
-        scrollIcon.style.right = "";
-        scrollIcon.style.left = (rect.left + 70) + "px";
-        scrollIcon.style.top = (rect.top + rect.height / 2) + "px";
-        scrollIcon.style.transform = "translateY(-50%)";
-
-        scrollMoved = true;
-    }
-
-    if (!scrollMoved) {
-        scrollIcon.style.right = scrollRight + "%";
-    }
-}
 
     const savedGender = localStorage.getItem("gender");
 
     if(savedGender === "男"){
 
-        player.src = "otoko2.png";
-        player.style.background = "transparent";
+    player.src = "otoko2.png";
+    player.style.background = "transparent";
 
-    }
+}
 
-    if(savedGender === "女"){
+if(savedGender === "女"){
 
-        player.src = "onnna2.png";
-        player.style.background = "transparent";
+    player.src = "onnna2.png";
+    player.style.background = "transparent";
 
-    }
+}
 
 });
 // 主人公移動
@@ -1244,16 +1222,50 @@ document.addEventListener("keydown",(e)=>{
         e.key !== "ArrowRight"
     ) return;
 
+    if(!playerCanMove) return;
 
-    playerX += 2;
-
+    playerX += 0.3;
 
     if(playerX > 90){
         playerX = 90;
     }
 
-
     playerMove.style.left = playerX + "%";
+
+    // 主人公とスクロールが触れたか確認
+    const playerRect = playerMove.getBoundingClientRect();
+    const scrollRect = scrollIcon.getBoundingClientRect();
+
+    if(
+        playerRect.right >= scrollRect.left &&
+        playerRect.left <= scrollRect.right &&
+        playerRect.bottom >= scrollRect.top &&
+        playerRect.top <= scrollRect.bottom
+    ){
+
+        // もう接触判定をしない
+        playerCanMove = false;
+
+        // スクロールをバーへ移動
+        const bar = document.getElementById("top-bar");
+        const barRect = bar.getBoundingClientRect();
+
+        scrollIcon.style.transition = "all 1.2s ease";
+
+        scrollIcon.style.left =
+            (barRect.left + 70) + "px";
+
+        scrollIcon.style.top =
+            (barRect.top + barRect.height / 2) + "px";
+
+        scrollIcon.style.right = "";
+
+        scrollIcon.style.transform =
+            "translateY(-50%) scale(0.45)";
+
+        scrollMoved = true;
+
+    }
 
 });
 const opVideo = document.getElementById("op-video");
