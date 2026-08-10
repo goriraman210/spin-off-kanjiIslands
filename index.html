@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -571,6 +572,33 @@
     }
 
 }
+#scroll-icon.move{
+    animation: scrollMove 1.2s ease forwards;
+}
+
+@keyframes scrollMove{
+
+    0%{
+        transform:translate(0,-50%) rotate(0deg);
+        font-size:60px;
+    }
+
+    40%{
+        transform:translate(0,-50%) rotate(360deg);
+        font-size:58px;
+    }
+
+    75%{
+        transform:translate(0,-50%) rotate(630deg);
+        font-size:48px;
+    }
+
+    100%{
+        transform:translate(0,-50%) rotate(720deg);
+        font-size:27px;
+    }
+
+}
 #player-ball{
 
     width:80px;
@@ -723,6 +751,55 @@ transform:translate(50px,-50%);
     background:#888;
 
 }
+/* 敵 */
+
+#enemy{
+    position:fixed;
+
+    width:80px;
+    height:80px;
+
+    object-fit:contain;
+
+    left:50%;
+    top:35%;
+
+    transform:translate(-50%,-50%);
+
+    z-index:500;
+
+    display:none;
+}
+
+/* 敵の頭上 */
+
+#enemy-kanji{
+    position:fixed;
+
+    left:50%;
+    top:calc(35% - 70px);
+
+    transform:translateX(-50%);
+
+    color:white;
+
+    text-align:center;
+
+    font-family:"Yomogi", cursive;
+
+    font-size:28px;
+
+    z-index:501;
+
+    display:none;
+
+    pointer-events:none;
+}
+
+#enemy-romaji{
+    font-size:20px;
+    margin-top:2px;
+}
 </style>
 </head>
 
@@ -869,7 +946,13 @@ transform:translate(50px,-50%);
     <div id="gear">⚙️</div>
     <div id="top-bar"></div>
     <img id="player-ball" src="">
-    <dov id="scroll-icon">📜</dov>
+    <div id="scroll-icon">📜</div>
+    <img id="enemy" src="saisyoteki.glb">
+
+<div id="enemy-kanji">
+    <div>魚</div>
+    <div id="enemy-romaji">sakana</div>
+</div>
 </div>
 <div id="skip-text">スキップ（Zキー）</div> 
     <script>
@@ -1120,6 +1203,14 @@ const gear = document.getElementById("gear");
 let playerCanMove = false;
 let gearSize = 13;
 let barShown = false;
+const enemy = document.getElementById("enemy");
+const enemyKanji = document.getElementById("enemy-kanji");
+
+let enemyX = 50;
+let enemyY = 35;
+
+let enemyActive = false;
+let enemyDefeated = false;
 let scrollShown = false;
 
 document.addEventListener("keydown", (e) => {
@@ -1247,7 +1338,33 @@ document.addEventListener("keydown",(e)=>{
         playerCanMove = false;
 
         // スクロールをバーへ移動
-        const bar = document.getElementById("top-bar");
+const bar = document.getElementById("top-bar");
+const rect = bar.getBoundingClientRect();
+
+scrollIcon.style.left = (rect.left + 18) + "px";
+scrollIcon.style.top = (rect.top + rect.height / 2) + "px";
+
+scrollIcon.classList.add("move");
+setTimeout(() => {
+
+    enemyActive = true;
+
+    enemy.style.display = "block";
+    enemyKanji.style.display = "block";
+
+    enemyX = 50;
+    enemyY = 35;
+
+    enemy.style.left = enemyX + "%";
+    enemy.style.top = enemyY + "%";
+
+    enemyKanji.style.left = enemyX + "%";
+    enemyKanji.style.top = "calc(" + enemyY + "% - 70px)";
+
+}, 1200);
+
+        // スクロールをバーへ移動
+        const topbar = document.getElementById("top-bar");
         const barRect = bar.getBoundingClientRect();
 
         scrollIcon.style.transition = "all 1.2s ease";
@@ -1293,6 +1410,43 @@ opStartBtn.addEventListener("click", ()=>{
     },800);
 
 });
+function moveEnemy(){
+
+    if(!enemyActive || enemyDefeated) return;
+
+
+    const dx = playerX - enemyX;
+    const dy = playerY - enemyY;
+
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+
+    if(distance > 0.5){
+
+        enemyX += (dx / distance) * 0.15;
+        enemyY += (dy / distance) * 0.15;
+
+    }
+
+
+    enemy.style.left = enemyX + "%";
+    enemy.style.top = enemyY + "%";
+
+
+    enemyKanji.style.left = enemyX + "%";
+    enemyKanji.style.top =
+        "calc(" + enemyY + "% - 70px)";
+
+
+    // 主人公に接触したら少し押し戻す
+    if(distance < 5){
+
+        playerX -= (dx / distance) * 0.5;
+        playerY -= (dy / distance) * 0.5;
+
+    }
+
+}
 </script>
 
 </body>
