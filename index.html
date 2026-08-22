@@ -720,12 +720,12 @@ transform:translate(50px,-50%);
 
 
 #op-start-btn{
-
     display:none;
 
     position:absolute;
-
-    bottom:100px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
 
     width:320px;
     height:90px;
@@ -734,18 +734,20 @@ transform:translate(50px,-50%);
     border-radius:18px;
 
     background:#666;
-
     color:white;
 
     font-size:40px;
-
     font-family:"Yomogi", cursive;
 
     cursor:pointer;
 
+    opacity:0;
+    transition:opacity .8s ease;
 }
 
-
+#op-start-btn.show{
+    opacity:1;
+}
 #op-start-btn:hover{
 
     background:#888;
@@ -799,6 +801,21 @@ transform:translate(50px,-50%);
 #enemy-romaji{
     font-size:20px;
     margin-top:2px;
+}
+#three-container{
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:100;
+}
+
+#three-container canvas{
+    display:block;
+    width:100%;
+    height:100%;
 }
 </style>
 </head>
@@ -854,10 +871,9 @@ transform:translate(50px,-50%);
 <!-- OP動画 -->
 <div id="skip-screen">
 
-    <video
+<video
     id="op-video"
     src="op.mp4"
-    autoplay
     muted
     playsinline>
 </video>
@@ -947,14 +963,277 @@ transform:translate(50px,-50%);
     <div id="top-bar"></div>
     <img id="player-ball" src="">
     <div id="scroll-icon">📜</div>
-    <img id="enemy" src="saisyoteki.glb">
+    <div id="three-container"></div>
+    <div id="enemy"></div>
 
 <div id="enemy-kanji">
     <div>魚</div>
-    <div id="enemy-romaji">sakana</div>
+    <div id="enemy-romaji">??????</div>
 </div>
 </div>
-<div id="skip-text">スキップ（Zキー）</div> 
+<div id="skip-text">スキップ（Zキー）</div>
+<script type="module">
+
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
+
+camera.position.set(0, 0, 5);
+
+const renderer = new THREE.WebGLRenderer({
+    alpha: true,
+    antialias: true
+});
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+document.getElementById("three-container")
+    .appendChild(renderer.domElement);
+
+const light = new THREE.HemisphereLight(
+    0xffffff,
+    0x444444,
+    3
+);
+
+scene.add(light);
+
+const loader = new GLTFLoader();
+
+loader.load(
+    "./saisyoteki-v1.glb",
+
+    (gltf) => {
+
+        const model = gltf.scene;
+
+        scene.add(model);
+
+        model.position.set(0, 0, 0);
+        model.scale.set(1, 1, 1);
+
+        console.log("GLB読み込み成功！");
+    },
+
+    undefined,
+
+    (error) => {
+        console.error("GLB読み込み失敗：", error);
+    }
+);
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    renderer.render(scene, camera);
+
+}
+
+animate();
+
+window.addEventListener("resize", () => {
+
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+});
+
+</script> 
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
+
+camera.position.z = 5;
+
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+document.body.appendChild(renderer.domElement);
+
+const loader = new GLTFLoader();
+
+loader.load("./saisyoteki-v1.glb", (gltf) => {
+
+    scene.add(gltf.scene);
+
+    renderer.render(scene, camera);
+
+});
+function animate() {
+    requestAnimationFrame(animate);
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+</script>
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+<script type="module">
+
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+</script>
+
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
+
+camera.position.set(0, 0, 5);
+
+
+const renderer = new THREE.WebGLRenderer(
+    alpha: true,
+    antialias: true
+);
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+document.getElementById("three-container")
+    .appendChild(renderer.domElement);
+
+
+// 光
+const light = new THREE.HemisphereLight(
+    0xffffff,
+    0x444444,
+    3
+);
+
+scene.add(light);
+
+
+// GLB読み込み
+const loader = new GLTFLoader();
+
+loader.load(
+    "./saisyoteki-v1.glb",
+
+    (gltf) => {
+
+        const model = gltf.scene;
+
+        scene.add(model);
+
+        model.position.set(0, 0, 0);
+
+        model.scale.set(1, 1, 1);
+
+        console.log("GLB読み込み成功！");
+    },
+
+    undefined,
+
+    (error) => {
+
+        console.error(
+            "GLB読み込み失敗：",
+            error
+        );
+
+    }
+);
+
+
+// アニメーション
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+animate();
+
+
+// 画面サイズ変更
+window.addEventListener("resize", () => {
+
+    camera.aspect =
+        window.innerWidth /
+        window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+});
+</script>
+
+
+</script>
     <script>
         function showWMessage(){
     document.getElementById("skip-text").textContent =
@@ -1017,36 +1296,22 @@ setTimeout(() => {
     company.classList.add("hide");
 
 }, 4800);
-
 // =========================
-// OP省略
+// OP動画
 // =========================
 
-// 5.6秒後 OP省略表示
+// 5.6秒後 OP表示 ＆ 動画再生
 setTimeout(() => {
 
     skip.classList.add("show");
 
+    opVideo.currentTime = 0;
+    opVideo.play();
+
 }, 5600);
-
-// 7.0秒後 OP省略を消す
-setTimeout(() => {
-
-    skip.classList.remove("show");
-    skip.classList.add("hide");
-
-}, 7000);
-
 // =========================
 // START画面
 // =========================
-
-// 7.8秒後 START表示
-setTimeout(() => {
-
-    startScreen.classList.add("show");
-
-}, 7800);
 
 // STARTボタン
 startBtn.addEventListener("click", () => {
@@ -1203,6 +1468,7 @@ const gear = document.getElementById("gear");
 let playerCanMove = false;
 let gearSize = 13;
 let barShown = false;
+let canMoveRight = false;
 const enemy = document.getElementById("enemy");
 const enemyKanji = document.getElementById("enemy-kanji");
 
@@ -1263,33 +1529,34 @@ if (gearSize >= 39) {
 });
 const gearSound = new Audio("gear.mp3");
 gearSound.volume = 0.6;
-const player = document.getElementById("player-ball");
 const savedGender = localStorage.getItem("gender");
 const scrollIcon = document.getElementById("scroll-icon");
 
 let scrollRight = 10;
 let scrollMoved = false;
 console.log();
-document.addEventListener("keydown", (e)=>{
+document.addEventListener("keydown", (e) => {
 
-    if(
+    if (
         e.key !== "d" &&
         e.key !== "D" &&
         e.key !== "ArrowRight"
     ) return;
 
- if (!playerCanMove) return;
-    if(!canMoveRight) return;
-
+    if (!playerCanMove) return;
+    if (!canMoveRight) return;
 
     const savedGender = localStorage.getItem("gender");
 
-    if(savedGender === "男"){
+    if (savedGender === "男") {
+        playerMove.src = "otoko2.png";
+    }
 
-    player.src = "otoko2.png";
-    player.style.background = "transparent";
+    if (savedGender === "女") {
+        playerMove.src = "onnna2.png";
+    }
 
-}
+
 
 if(savedGender === "女"){
 
@@ -1304,6 +1571,7 @@ if(savedGender === "女"){
 const playerMove = document.getElementById("player-ball");
 
 let playerX = 50;
+let playerY = 35;
 
 document.addEventListener("keydown",(e)=>{
 
@@ -1315,7 +1583,7 @@ document.addEventListener("keydown",(e)=>{
 
     if(!playerCanMove) return;
 
-    playerX += 0.3;
+    playerX += 0.7;
 
     if(playerX > 90){
         playerX = 90;
@@ -1390,9 +1658,23 @@ const opStartBtn = document.getElementById("op-start-btn");
 
 
 // 動画終了したらSTART表示
-opVideo.addEventListener("ended", ()=>{
+opVideo.addEventListener("ended", () => {
 
-    opStartBtn.style.display = "block";
+    // 動画をふわっと消す
+    opVideo.style.transition = "opacity 1s ease";
+    opVideo.style.opacity = "0";
+
+    // 黒画面になってからSTART表示
+    setTimeout(() => {
+
+        opStartBtn.style.display = "block";
+
+        // display:blockになったあとフェードイン
+        requestAnimationFrame(() => {
+            opStartBtn.classList.add("show");
+        });
+
+    }, 1000);
 
 });
 
@@ -1447,6 +1729,11 @@ function moveEnemy(){
     }
 
 }
+const loader = new GLTFLoader();
+
+loader.load("./saisyoteki-v1.glb", (gltf) => {
+    scene.add(gltf.scene);
+});
 </script>
 
 </body>
