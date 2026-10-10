@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1473,7 +1469,7 @@ setTimeout(() => {
     enemy.style.top = enemyY + "%";
 
     enemyKanji.style.left = enemyX + "%";
-    enemyKanji.style.top = "calc(" + enemyY + "% - 70px)";
+    enemyKanji.style.top = "calc(" + enemyY + "% - 120px)";
 
 }, 1200);
 
@@ -1575,6 +1571,37 @@ function moveEnemy(){
     }
 
 }
+
+// =========================
+// タイピング判定処理
+// =========================
+const targetWord = "sakana";
+let typedIndex = 0;
+
+window.addEventListener("keydown", (e) => {
+    // 魚（お題）が出現していない時は入力を無視
+    if (!enemyActive || enemyDefeated) return;
+
+    // 押されたキーが正解の文字（小文字）と一致するか
+    if (e.key.toLowerCase() === targetWord[typedIndex]) {
+        typedIndex++;
+
+        // 打った分はアルファベット、残りは ? にする
+        const currentDisplay = targetWord.slice(0, typedIndex) + "?".repeat(targetWord.length - typedIndex);
+        
+        // ローマ字の部分（#enemy-romaji）だけを書き換える
+        const enemyRomaji = document.getElementById("enemy-romaji");
+        if (enemyRomaji) {
+            enemyRomaji.innerText = currentDisplay;
+        }
+
+        // 最後まで打ち終わったとき
+        if (typedIndex === targetWord.length) {
+            console.log("魚を倒した!!");
+            enemyDefeated = true;
+        }
+    }
+});
 </script>
 
 </body>
