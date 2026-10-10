@@ -1,5 +1,7 @@
 
 
+
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,6 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon (8).ico" sizes="any">
+
+    <!-- Font Awesome 6 CDN 読み込み -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
     body{
     margin:0;
@@ -660,34 +665,20 @@
 
 #top-bar.show{
     top:2cm;            /* 上から約2cm */
+    z-index: 999;
 }
 #scroll-icon{
-
     position:fixed;
-
-    top:50%;
-transform:translate(50px,-50%);
-
+    top:50%;transform:translate(50px,-50%);
     right:10%;
-
-    width:80px;
-    height:80px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
+    width:80px;    height:80px;
+    display:flex;    justify-content:center;    align-items:center;
     font-size:60px;
-
     opacity:0;
-
     transform:translateX(50px);
-
     transition:all .8s ease;
-
+    z-index: 1000; /* バー(999)よりも前面に表示 */
 }
-
-
 #scroll-icon.show{
 
     opacity:1;
@@ -754,23 +745,19 @@ transform:translate(50px,-50%);
 
 }
 /* 敵 */
-
 #enemy{
     position:fixed;
-
     width:80px;
     height:80px;
-
     object-fit:contain;
-
     left:50%;
     top:35%;
-
     transform:translate(-50%,-50%);
-
     z-index:500;
-
     display:none;
+
+    /* 背景が黒い場合にグレーの模様を馴染ませる */
+    mix-blend-mode: screen;
 }
 
 /* 敵の頭上 */
@@ -964,113 +951,13 @@ transform:translate(50px,-50%);
     <img id="player-ball" src="">
     <div id="scroll-icon">📜</div>
     <div id="three-container"></div>
-    <div id="enemy"></div>
-
+   <img id="enemy" src="sakana.png">
 <div id="enemy-kanji">
     <div>魚</div>
     <div id="enemy-romaji">??????</div>
 </div>
 </div>
 <div id="skip-text">スキップ（Zキー）</div>
-<script type="module">
-
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
-const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
-
-camera.position.set(0, 0, 5);
-
-const renderer = new THREE.WebGLRenderer({
-    alpha: true,
-    antialias: true
-});
-
-renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-);
-
-renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
-);
-
-document.getElementById("three-container")
-    .appendChild(renderer.domElement);
-
-const light = new THREE.HemisphereLight(
-    0xffffff,
-    0x444444,
-    3
-);
-
-scene.add(light);
-
-const loader = new GLTFLoader();
-
-loader.load(
-    "./saisyoteki-v1.glb",
-
-    (gltf) => {
-
-        const model = gltf.scene;
-
-        scene.add(model);
-
-        model.position.set(0, 0, 0);
-        model.scale.set(1, 1, 1);
-
-        console.log("GLB読み込み成功！");
-    },
-
-    undefined,
-
-    (error) => {
-        console.error("GLB読み込み失敗：", error);
-    }
-);
-
-function animate() {
-
-    requestAnimationFrame(animate);
-
-    renderer.render(scene, camera);
-
-}
-
-animate();
-
-window.addEventListener("resize", () => {
-
-    camera.aspect =
-        window.innerWidth / window.innerHeight;
-
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-
-});
-
-</script> 
-<script type="importmap">
-{
-    "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
-    }
-}
-</script>
-
 <script type="module">
 
 import * as THREE from "three";
@@ -1092,15 +979,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 
-const loader = new GLTFLoader();
-
-loader.load("./saisyoteki-v1.glb", (gltf) => {
-
-    scene.add(gltf.scene);
-
-    renderer.render(scene, camera);
-
-});
 function animate() {
     requestAnimationFrame(animate);
 
@@ -1166,39 +1044,6 @@ const light = new THREE.HemisphereLight(
 );
 
 scene.add(light);
-
-
-// GLB読み込み
-const loader = new GLTFLoader();
-
-loader.load(
-    "./saisyoteki-v1.glb",
-
-    (gltf) => {
-
-        const model = gltf.scene;
-
-        scene.add(model);
-
-        model.position.set(0, 0, 0);
-
-        model.scale.set(1, 1, 1);
-
-        console.log("GLB読み込み成功！");
-    },
-
-    undefined,
-
-    (error) => {
-
-        console.error(
-            "GLB読み込み失敗：",
-            error
-        );
-
-    }
-);
-
 
 // アニメーション
 function animate(){
@@ -1504,14 +1349,15 @@ if (gearSize >= 39) {
     // バーが降りてきてから位置を取得
     setTimeout(() => {
 
-        const rect = bar.getBoundingClientRect();
+    // 先にアニメーションクラスをつける
+    gear.classList.add("move");
 
-        gear.style.left = (rect.left + 18) + "px";
-        gear.style.top = (rect.top + rect.height / 2) + "px";
+    const rect = bar.getBoundingClientRect();
 
-        gear.classList.add("move");
+    gear.style.left = (rect.left + 18) + "px";
+    gear.style.top = (rect.top + rect.height / 2) + "px";
 
-    }, 600); // バーの transition: top .6s と同じ時間
+}, 600);
     setTimeout(() => {
 
     scrollIcon.classList.add("show");
@@ -1729,11 +1575,6 @@ function moveEnemy(){
     }
 
 }
-const loader = new GLTFLoader();
-
-loader.load("./saisyoteki-v1.glb", (gltf) => {
-    scene.add(gltf.scene);
-});
 </script>
 
 </body>
