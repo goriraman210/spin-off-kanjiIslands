@@ -19,7 +19,7 @@
 <style>
     body{
     margin:0;
-    background:#000;
+    background:#232222;
     overflow:hidden;
 
     font-family:"Yomogi", cursive;
@@ -42,7 +42,7 @@
     align-items:center;
     text-align:center;
 
-    background:#000;
+    background:#232222;
     color:#fff;
 
     font-family:"Yomogi", cursive;
@@ -109,7 +109,7 @@
     align-items:center;
     text-align:center;
 
-    background:#000;
+    background:#232222;
 
     font-family:"Yomogi", cursive;
 
@@ -230,7 +230,7 @@
     justify-content:center;
     align-items:center;
 
-    background:#000;
+    background:#232222;
 
     opacity:0;
 
@@ -529,7 +529,7 @@
 
     flex-direction:column;
 
-    background:#000;
+    background:#232222;
 
 }
 
@@ -789,21 +789,23 @@
     font-size:20px;
     margin-top:2px;
 }
-#three-container{
-    position:fixed;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-    z-index:100;
+
+/*敵の消滅アニメーションだよ!!*/
+@keyframes fadeOutEnemy{
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
 }
 
-#three-container canvas{
-    display:block;
-    width:100%;
-    height:100%;
+.enemy-fade-out{
+    animation: fadeOutEnemy 0.8s ease forwards;
 }
+
 </style>
 </head>
 
@@ -937,7 +939,7 @@
         </div>
 
         <button id="gender-ok-btn">
-            決定
+            決定!!
         </button>
 
     </div>
@@ -946,10 +948,10 @@
 <!-- プレイヤー生成画面 -->
 <div id="create-screen">
 
-    <div id="gear">⚙️</div>
+    <div id="gear"><i class="fa-solid fa-gear"></i></div>
     <div id="top-bar"></div>
     <img id="player-ball" src="">
-    <div id="scroll-icon">📜</div>
+    <div id="scroll-icon"><i class="fa-solid fa-clipboard"></i></div>
     <div id="three-container"></div>
    <img id="enemy" src="sakana.png">
 <div id="enemy-kanji">
@@ -958,128 +960,9 @@
 </div>
 </div>
 <div id="skip-text">スキップ（Zキー）</div>
-<script type="module">
+<!-- ピカごり_pikagori登場!! -->
 
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
-const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
-
-camera.position.z = 5;
-
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-
-document.body.appendChild(renderer.domElement);
-
-function animate() {
-    requestAnimationFrame(animate);
-
-    renderer.render(scene, camera);
-}
-
-animate();
-
-</script>
-<script type="importmap">
-{
-    "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
-    }
-}
-</script>
-<script type="module">
-
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
-</script>
-
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
-const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
-
-camera.position.set(0, 0, 5);
-
-
-const renderer = new THREE.WebGLRenderer(
-    alpha: true,
-    antialias: true
-);
-
-renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-);
-
-renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
-);
-
-document.getElementById("three-container")
-    .appendChild(renderer.domElement);
-
-
-// 光
-const light = new THREE.HemisphereLight(
-    0xffffff,
-    0x444444,
-    3
-);
-
-scene.add(light);
-
-// アニメーション
-function animate(){
-
-    requestAnimationFrame(animate);
-
-    renderer.render(
-        scene,
-        camera
-    );
-
-}
-
-animate();
-
-
-// 画面サイズ変更
-window.addEventListener("resize", () => {
-
-    camera.aspect =
-        window.innerWidth /
-        window.innerHeight;
-
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-
-});
-</script>
-
-
-</script>
-    <script>
+<script>
         function showWMessage(){
     document.getElementById("skip-text").textContent =
     "↑ 上矢印キー(Wキー)を押すんだ!!";
@@ -1332,7 +1215,7 @@ document.addEventListener("keydown", (e) => {
         e.key !== "ArrowUp"
     ) return;
 
-    // バーが出たら、歯車を動かなくする😊
+    // バーが出たら、歯車を動かなくする
     if (barShown) return;
 
     gearSize += 1;
@@ -1395,7 +1278,7 @@ document.addEventListener("keydown", (e) => {
     const savedGender = localStorage.getItem("gender");
 
     if (savedGender === "男") {
-        playerMove.src = "otoko2.png";
+        playerMove.src ="otoko2.png";
     }
 
     if (savedGender === "女") {
@@ -1448,7 +1331,7 @@ document.addEventListener("keydown",(e)=>{
         playerRect.top <= scrollRect.bottom
     ){
 
-        // もう接触判定をしない
+        // 接触判定をしない
         playerCanMove = false;
 
         // スクロールをバーへ移動
@@ -1482,17 +1365,13 @@ setTimeout(() => {
         const barRect = bar.getBoundingClientRect();
 
         scrollIcon.style.transition = "all 1.2s ease";
-
-        scrollIcon.style.left =
-            (barRect.left + 70) + "px";
-
-        scrollIcon.style.top =
-            (barRect.top + barRect.height / 2) + "px";
-
+        scrollIcon.style.left = (barRect.left + 70) + "px";
+        scrollIcon.style.top = (barRect.top + barRect.height / 2) + "px";
         scrollIcon.style.right = "";
+        scrollIcon.style.transform = "translateY(-50%) scale(0.45)";
 
-        scrollIcon.style.transform =
-            "translateY(-50%) scale(0.45)";
+        // クリップボードを取ったときメッセージ変更
+        document.getElementById("skip-text").textContent = "sakanaと打ってみよう!!";
 
         scrollMoved = true;
 
@@ -1593,19 +1472,36 @@ window.addEventListener("keydown", (e) => {
         // 打った分はアルファベット、残りは ? にする
         const currentDisplay = targetWord.slice(0, typedIndex) + "?".repeat(targetWord.length - typedIndex);
         
-        // ローマ字の部分（#enemy-romaji）だけを書き換える
+        // ローマ字の部分（#enemy-romaji）だけを書き換えよーお
         const enemyRomaji = document.getElementById("enemy-romaji");
         if (enemyRomaji) {
             enemyRomaji.innerText = currentDisplay;
         }
 
-        // 最後まで打ち終わったとき
+        // 最後まで打ち終わったときはー？
         if (typedIndex === targetWord.length) {
             console.log("魚を倒した!!");
             enemyDefeated = true;
+
+        // 魚を倒したらsakana.pm3(死んだ後のうめき声)を追加しましょー!!
+
+        const sakanaSound = new Audio("sakana.mp3");
+        sakanaSound.volume = 0.7;
+        sakanaSound.play().catch(e => console.log("音声エラーが発生しました",e));
+
+        // 敵と感じがふわっと消えるよー!!
+        enemy.classList.add("enemy-fade-out");
+        enemyKanji.classList.add("enemy-fade-out");
+
+        // アニメーションが終わる時間(0.8s後)に完全に非表示にする
+        setTimeout(() => {
+            enemy.style.display = "none";
+            enemyKanji.style.display = "none";
+        },800);
         }
     }
 });
+
 </script>
 
 </body>
