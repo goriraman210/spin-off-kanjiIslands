@@ -1296,89 +1296,115 @@ if(savedGender === "女"){
 
 });
 // 主人公移動
-
 const playerMove = document.getElementById("player-ball");
-
 let playerX = 50;
 let playerY = 35;
 
-document.addEventListener("keydown",(e)=>{
+document.addEventListener("keydown", (e) => {
 
-    if(
-        e.key !== "d" &&
-        e.key !== "D" &&
-        e.key !== "ArrowRight"
-    ) return;
+   // 💡 修正：さかなを倒した後かつピカごりが出る前なら、上キー（W / ArrowUp）以外を無効化する
+    if (typeof enemyDefeated !== "undefined" && enemyDefeated && typeof pikagoriShown !== "undefined" && !pikagoriShown) {
+        const k = e.key.toLowerCase();
+        const orig = e.key;
+        if (k !== "w" && orig !== "ArrowUp") {
+            return; // 上キー以外は無視！
+        }
+    } if (!playerCanMove) return;
 
-    if(!playerCanMove) return;
+    const key = e.key;
 
-    playerX += 0.7;
+    // 1. 右移動の判定（クリップボード取得前も取得後もいつでもOK）
+    if (key === "d" || key === "D" || key === "ArrowRight") {
+        if (!canMoveRight) return;
 
-    if(playerX > 90){
-        playerX = 90;
+        playerX += 0.7;
+        if (playerX > 90) playerX = 90;
+        playerMove.style.left = playerX + "%";
+
+        const savedGender = localStorage.getItem("gender");
+        if (savedGender === "男") {
+            playerMove.src = "otoko2.png";
+            playerMove.style.background = "transparent";
+        }
+        if (savedGender === "女") {
+            playerMove.src = "onnna2.png";
+            playerMove.style.background = "transparent";
+        }
+
+        // 主人公とスクロールが触れたか確認
+        if (!scrollMoved) {
+            const playerRect = playerMove.getBoundingClientRect();
+            const scrollRect = scrollIcon.getBoundingClientRect();
+
+            if (
+                playerRect.right >= scrollRect.left &&
+                playerRect.left <= scrollRect.right &&
+                playerRect.bottom >= scrollRect.top &&
+                playerRect.top <= scrollRect.bottom
+            ){
+                scrollMoved = true;
+
+                // スクロールをバーへ移動
+                const bar = document.getElementById("top-bar");
+                const rect = bar.getBoundingClientRect();
+
+                scrollIcon.style.left = (rect.left + 18) + "px";
+                scrollIcon.style.top = (rect.top + rect.height / 2) + "px";
+                scrollIcon.classList.add("move");
+
+                setTimeout(() => {
+                    enemyActive = true;
+                    enemy.style.display = "block";
+                    enemyKanji.style.display = "block";
+
+                    enemyX = 50;
+                    enemyY = 35;
+
+                    enemy.style.left = enemyX + "%";
+                    enemy.style.top = enemyY + "%";
+
+                    enemyKanji.style.left = enemyX + "%";
+                    enemyKanji.style.top = "calc(" + enemyY + "% - 120px)";
+                }, 1200);
+
+                const topbar = document.getElementById("top-bar");
+                const barRect = bar.getBoundingClientRect();
+
+                scrollIcon.style.transition = "all 1.2s ease";
+                scrollIcon.style.left = (barRect.left + 70) + "px";
+                scrollIcon.style.top = (barRect.top + barRect.height / 2) + "px";
+                scrollIcon.style.right = "";
+                scrollIcon.style.transform = "translateY(-50%) scale(0.45)";
+
+                // クリップボードを取ったときメッセージ変更
+                document.getElementById("skip-text").textContent = "sakanaと打ってみよう!!";
+            }
+        }
+    }
+    // 2. 下移動の判定 (クリップボードを取った後＝scrollMovedがtrueのときだけ有効)
+    if (scrollMoved && (key === "" || key === "" || key === "ArrowDown")) {
+        playerY += 0.7;
+        moved = true;
     }
 
-    playerMove.style.left = playerX + "%";
+    // 3. 左移動の判定（クリップボードを取った後＝scrollMovedがtrueのときだけ有効）
+    if (scrollMoved && (key === "a" || key === "A" || key === "ArrowLeft")) {
+        playerX -= 0.7;
+        if (playerX < 10) playerX = 10;
+        playerMove.style.left = playerX + "%";
 
-    // 主人公とスクロールが触れたか確認
-    const playerRect = playerMove.getBoundingClientRect();
-    const scrollRect = scrollIcon.getBoundingClientRect();
-
-    if(
-        playerRect.right >= scrollRect.left &&
-        playerRect.left <= scrollRect.right &&
-        playerRect.bottom >= scrollRect.top &&
-        playerRect.top <= scrollRect.bottom
-    ){
-
-        // 接触判定をしない
-        playerCanMove = false;
-
-        // スクロールをバーへ移動
-const bar = document.getElementById("top-bar");
-const rect = bar.getBoundingClientRect();
-
-scrollIcon.style.left = (rect.left + 18) + "px";
-scrollIcon.style.top = (rect.top + rect.height / 2) + "px";
-
-scrollIcon.classList.add("move");
-setTimeout(() => {
-
-    enemyActive = true;
-
-    enemy.style.display = "block";
-    enemyKanji.style.display = "block";
-
-    enemyX = 50;
-    enemyY = 35;
-
-    enemy.style.left = enemyX + "%";
-    enemy.style.top = enemyY + "%";
-
-    enemyKanji.style.left = enemyX + "%";
-    enemyKanji.style.top = "calc(" + enemyY + "% - 120px)";
-
-}, 1200);
-
-        // スクロールをバーへ移動
-        const topbar = document.getElementById("top-bar");
-        const barRect = bar.getBoundingClientRect();
-
-        scrollIcon.style.transition = "all 1.2s ease";
-        scrollIcon.style.left = (barRect.left + 70) + "px";
-        scrollIcon.style.top = (barRect.top + barRect.height / 2) + "px";
-        scrollIcon.style.right = "";
-        scrollIcon.style.transform = "translateY(-50%) scale(0.45)";
-
-        // クリップボードを取ったときメッセージ変更
-        document.getElementById("skip-text").textContent = "sakanaと打ってみよう!!";
-
-        scrollMoved = true;
-
+        // 左移動の画像切替だわよん
+        const savedGender = localStorage.getItem("gender");
+        if (savedGender === "男") {
+            playerMove.src ="otoko3.png";
+            playerMove.style.background = "transparent";
+        }
+        if (savedGender === "女") {
+            playerMove.src = "onnna3.png";
+            playerMove.style.background = "transparent";
+        }
     }
-
-});
-const opVideo = document.getElementById("op-video");
+});const opVideo = document.getElementById("op-video");
 const opStartBtn = document.getElementById("op-start-btn");
 
 
@@ -1469,6 +1495,11 @@ window.addEventListener("keydown", (e) => {
     if (e.key.toLowerCase() === targetWord[typedIndex]) {
         typedIndex++;
 
+    // 正しく打つたびにパソコンのクリック音だよーお
+    const katiSound = new Audio("PC-Mouse06-1.mp3")
+    katiSound.volume = 0.5;
+    katiSound.play().catch(err => console.log("音声エラーが発生しました",err));
+
         // 打った分はアルファベット、残りは ? にする
         const currentDisplay = targetWord.slice(0, typedIndex) + "?".repeat(targetWord.length - typedIndex);
         
@@ -1498,10 +1529,83 @@ window.addEventListener("keydown", (e) => {
             enemy.style.display = "none";
             enemyKanji.style.display = "none";
         },800);
+
+        // 1.左下のメッセージ変更だよーお
+        document.getElementById("skip-text").textContent = "あれっ? あそこの影にいるのはなんだろう?↑キーをおして確かめよう";
+        }
+
+        // 2.プレイヤーボールに戻す　男:水色　女:ピンク
+        const savedGender = localStorage.getItem("gender");
+        const player = document.getElementById("player-ball");
+        player.src = "";// プレイヤー画像を外す
+        if (savedGender === "男") {
+            player.style.background = "#4fc3ff"; // 水色
+        } else if (savedGender === "女") {
+            player.style.background = "ff6bb5"; // ピンク
+        }
+    }
+});
+// =========================
+// 上キー 3秒長押しで pikagori.png 出現
+// =========================
+let upPressTimer = null;
+let pikagoriShown = false;
+
+// キーを押した瞬間
+document.addEventListener("keydown", (e) => {
+    // さかなを倒した後かつ、まだピカごりが出ていない場合のみ
+    if (!enemyDefeated || pikagoriShown) return;
+
+    if (e.key === "w" || e.key === "W" || e.key === "ArrowUp") {
+        // すでにタイマーが動いていなければ、3秒のカウントダウンを開始
+        if (!upPressTimer) {
+            console.log("上キー長押し開始...");
+            upPressTimer = setTimeout(() => {
+                pikagoriShown = true;
+                showPikagori();
+            }, 3000); // 3000ミリ秒 = 3秒
         }
     }
 });
 
+// キーを離した瞬間（途中で離したらタイマーをキャンセル）
+document.addEventListener("keyup", (e) => {
+    if (e.key === "w" || e.key === "W" || e.key === "ArrowUp") {
+        if (upPressTimer) {
+            clearTimeout(upPressTimer);
+            upPressTimer = null;
+            console.log("長押し中断");
+        }
+    }
+});
+
+// 3秒長押し達成時の処理
+function showPikagori() {
+    console.log("pikagori出現！");
+    
+    // 画像要素を動的に作成して画面に出す（またはHTMLにあらかじめ用意してもOKです）
+    const pikagori = document.createElement("img");
+    pikagori.src = "pikagori.png";
+    pikagori.id = "pikagori-obj";
+    
+    // 画面の隅（例：右下や左上の影の隅）に配置するCSSスタイル
+    pikagori.style.position = "fixed";
+    pikagori.style.bottom = "50px";
+    pikagori.style.right = "50px";
+    pikagori.style.width = "100px";
+    pikagori.style.height = "100px";
+    pikagori.style.objectFit = "contain";
+    pikagori.style.zIndex = "1000";
+    pikagori.style.opacity = "0";
+    pikagori.style.transition = "opacity 1s ease"; // ふわっと出す演出
+
+    document.body.appendChild(pikagori);
+
+    // 少し遅れてふわっと表示
+    setTimeout(() => {
+        pikagori.style.opacity = "1";
+    }, 100);
+}
 </script>
 
 </body>
