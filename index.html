@@ -1330,6 +1330,59 @@ function bindHoldButton(btn, onStart, onEnd, repeatIntervalMs = null) {
 bindHoldButton(btnLeft, handleMoveLeft, null, 70);
 bindHoldButton(btnRight, handleMoveRight, null, 70);
 bindHoldButton(btnUp, handleUpPressStart, handleUpPressEnd, 140);
+// 隠し入力欄をローマ字（英字・小文字）入力向きに設定
+
+hiddenMobileInput.setAttribute("inputmode", "latin");
+hiddenMobileInput.setAttribute("enterkeyhint", "done");
+
+function openRomanKeyboard() {
+    hiddenMobileInput.value = "";
+    hiddenMobileInput.style.pointerEvents = "auto";
+    hiddenMobileInput.focus({ preventScroll: true });
+    hiddenMobileInput.click();
+    setTimeout(() => {
+        hiddenMobileInput.style.pointerEvents = "none";
+    }, 300);
+}
+
+// enemy表示時（spawnSakanaAndOpenKeyboard 内）に呼ぶ
+function spawnSakanaAndOpenKeyboard() {
+    enemyActive = true;
+    enemy.style.display = "block";
+    enemyKanji.style.display = "block";
+
+    enemyX = 50;
+    enemyY = 35;
+
+    enemy.style.left = enemyX + "%";
+    enemy.style.top = enemyY + "%";
+
+    enemyKanji.style.left = enemyX + "%";
+    enemyKanji.style.top = "calc(" + enemyY + "% - 105px)";
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            enemy.classList.add("fade-in");
+            enemyKanji.classList.add("fade-in");
+            openRomanKeyboard();
+        });
+    });
+}
+
+// enemy 自体や画面をタップしたときもキーボードを出す
+enemy.addEventListener("pointerdown", (e) => {
+    e.stopPropagation();
+    if (enemyActive && !enemyDefeated) {
+        openRomanKeyboard();
+    }
+});
+
+document.getElementById("create-screen").addEventListener("pointerdown", (e) => {
+    if (enemyActive && !enemyDefeated && !e.target.closest(".touch-btn")) {
+        openRomanKeyboard();
+    }
+});
+
 </script>
 </body>
 </html>
